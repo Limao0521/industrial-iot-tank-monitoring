@@ -1,17 +1,22 @@
 # Project guide
 
 ## Map
-- `wiki/Home.md`: recovered technical Wiki; preserve its wording and placeholders.
-- `docs/Entrega_RA2.3.md`: sourced delivery checklist and rubric interpretation.
-- `references/`: original course PDF and evaluation workbook.
-- `.ai/HANDOFF.md`: outstanding publication and file recovery work.
+- `wiki/Home.md`: technical documentation synchronized with the native GitHub Wiki.
+- `docs/images/`: final source images, copied unchanged.
+- `codesys/RA.project` and `openplc/`: editable control projects.
+- `submission/RA#2.3.zip`: author-prepared delivery archive, copied unchanged.
+- `references/`: original course PDF and rubric workbook.
+- `docs/Entrega_RA2.3.md`: delivery guide and rubric interpretation.
+- `.ai/HANDOFF.md`: publication state.
 
 ## Constraints
-- Do not replace missing original text with invented text.
-- Do not claim hardware tests from documentation-only review.
-- Source projects and submission ZIPs still need to be added after their current locations are confirmed.
+- Preserve program logic and original source bytes.
+- Do not generate delivery archives.
+- Use the confirmed GPIO map; do not infer electrical wiring.
+- Video delivery is a file in Teams.
+- Do not claim new hardware tests from documentation review.
 
 ## Checks
 - `git status --short`
-- Compare copied source bytes and archive entries before publication.
-- Verify actual repository and native Wiki URLs after publication.
+- Verify source and image SHA256 hashes.
+- Verify the native Wiki and image rendering after publication.

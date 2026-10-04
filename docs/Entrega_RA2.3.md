@@ -7,7 +7,7 @@ La lista de archivos proviene del enunciado de la actividad que compartiste en l
 1. **ZIP del proyecto CODESYS:** proyecto editable, Ladder, variables, Visualization/HMI y lógica de inicio y parada.
 2. **ZIP del proyecto OpenPLC:** proyecto editable, Ladder, configuración del controlador ESP32 y mapeo de entradas y salidas.
 3. **URL de la Wiki en GitHub o Bitbucket:** explicación del diseño lógico, tabla de verdad, ecuaciones, Ladder, HMI, esquema eléctrico, implementación, pruebas, resultados, conclusiones y referencias.
-4. **Video de diez minutos:** demuestra CODESYS y OpenPLC con hardware real. Según el enunciado compartido, se entrega en la actividad de Teams o mediante enlace de YouTube y debe poder reproducirse desde Teams. Recomiendo no superar diez minutos.
+4. **Video de diez minutos:** demuestra CODESYS y OpenPLC con hardware real. Se entregará como archivo directamente en la actividad de Teams. Recomiendo no superar diez minutos.
 
 El enunciado compartido establece trabajo **individual**. El repositorio ayuda a organizar la entrega, pero no sustituye los ZIP, el video y la URL que deben adjuntarse en la actividad.
 
@@ -77,22 +77,15 @@ Estos puntos parecen proceder de una rúbrica general. Esa es una interpretació
 
 La nota de `I26` indica que la ausencia de entregable para un indicador implica calificación cero para ese indicador. Los valores de nota existentes en el archivo son una plantilla sin completar y no constituyen una calificación de este proyecto.
 
-## Evidencia que falta completar en la Wiki recuperada
+## Evidencia y archivos del proyecto
 
-- [ ] Figura 1: captura del HMI CODESYS.
-- [ ] Figura 2: captura Ladder OpenPLC.
-- [ ] Figura 3: configuración de variables OpenPLC.
-- [ ] Figura 4: pin mapping OpenPLC.
-- [ ] Figura 5: fotografía del prototipo.
-- [ ] Figura 6: esquema eléctrico real.
-- [ ] Capturas Ladder y simulación CODESYS y evidencias de las ocho pruebas.
-- [ ] Enlace de video en `[ADD VIDEO LINK HERE]`.
-- [ ] Revisar y completar las referencias IEEE con datos bibliográficos, enlaces y fechas.
-- [ ] Recuperar el final original de la lista del video, truncado desde «7. OpenPLC implemen…» en la conversación disponible.
+Las seis imágenes finales están en `docs/images/` y se incluyen en la documentación técnica: variables, Ladder y HMI CODESYS; Ladder y variables OpenPLC; pin mapping y fotografía del prototipo.
 
-La configuración OpenPLC leída al comenzar la revisión asigna STOP a **GPIO 16** (`%IX0.4`) y `SystemActive` a GPIO 17 (`%QX0.5`). El placeholder `[GPIO USED FOR STOP]` se conserva en la Wiki por la instrucción de mantener el texto original; el dato del archivo no prueba por sí solo el cableado físico.
+STOP corresponde a **GPIO 16** (`%IX0.4`) y `SystemActive` a **GPIO 17** (`%QX0.5`), según el pin mapping guardado y su captura. La Wiki incluye un mapa de señales con las asignaciones confirmadas. No hay un esquema eléctrico detallado disponible.
 
-Las tablas PASS de la Wiki proceden del texto anterior y del funcionamiento reportado por el autor. Esta revisión documental no ejecutó CODESYS, OpenPLC ni pruebas físicas.
+El proyecto CODESYS está en `codesys/RA.project`; el proyecto OpenPLC, en `openplc/`. El ZIP preparado por el autor se conserva sin cambios en `submission/RA#2.3.zip`. El video se entregará como archivo directamente en Teams.
+
+Las tablas de resultados recogen las pruebas de laboratorio reportadas por el autor. Las referencias técnicas incluyen documentación oficial de CODESYS, OpenPLC e IEC.
 
 ## Guía de video recomendada
 

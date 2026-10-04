@@ -197,6 +197,12 @@ SystemActive
 
 ---
 
+![CODESYS global Boolean variables](https://raw.githubusercontent.com/Limao0521/industrial-iot-tank-monitoring/main/docs/images/codesys-global-variables.png)
+
+Figure 1. Global variables for sensors, status outputs and Start/Stop control in CODESYS.
+
+---
+
 # 8. Start/Stop Logic
 
 A self-holding circuit was implemented to control `SystemActive`.
@@ -276,6 +282,12 @@ This network detects inconsistent sensor combinations independently of the norma
 
 ---
 
+![CODESYS tank monitoring Ladder Diagram](https://raw.githubusercontent.com/Limao0521/industrial-iot-tank-monitoring/main/docs/images/codesys-tank-ladder.png)
+
+Figure 2. CODESYS Ladder networks for the Start/Stop latch and all five tank conditions.
+
+---
+
 # 10. CODESYS HMI
 
 A Human-Machine Interface was created in CODESYS to provide a graphical representation of the system.
@@ -300,11 +312,9 @@ The interface provides visual feedback for:
 - High Level.
 - Sensor Error.
 
-> **Insert Figure 1 here – CODESYS HMI**
+![CODESYS tank monitoring HMI](https://raw.githubusercontent.com/Limao0521/industrial-iot-tank-monitoring/main/docs/images/codesys-tank-hmi.png)
 
-```text
-Figure 1. Tank monitoring HMI implemented in CODESYS.
-```
+Figure 3. Tank monitoring HMI implemented in CODESYS.
 
 ---
 
@@ -355,11 +365,9 @@ The objective of this stage was to verify that the logic could operate on real p
 
 The Ladder program implemented in OpenPLC maintained the same logical behavior as the CODESYS implementation.
 
-> **Insert Figure 2 here – OpenPLC Ladder**
+![OpenPLC Ladder and IEC variables](https://raw.githubusercontent.com/Limao0521/industrial-iot-tank-monitoring/main/docs/images/openplc-ladder-and-variables.png)
 
-```text
-Figure 2. Ladder implementation in OpenPLC.
-```
+Figure 4. OpenPLC Ladder implementation and IEC variable addresses.
 
 ---
 
@@ -369,7 +377,7 @@ The physical signals were mapped to IEC addresses.
 
 The three level sensors and system controls use digital inputs, while H1-H5 use digital outputs.
 
-An example of the implemented mapping is shown below.
+The implemented mapping is shown below.
 
 | Variable | IEC Address | Function |
 |---|---|---|
@@ -383,14 +391,11 @@ An example of the implemented mapping is shown below.
 | H3 | %QX0.2 | High level |
 | H4 | %QX0.3 | Empty tank |
 | H5 | %QX0.4 | Sensor error |
+| SystemActive | %QX0.5 | System active indicator |
 
-`SystemActive` is used internally by the control logic and can additionally be represented by a physical indicator.
+`SystemActive` enables the monitoring logic and is also mapped to a physical indicator at `%QX0.5`.
 
-> **Insert Figure 3 here – OpenPLC Variable Configuration**
-
-```text
-Figure 3. IEC variable addressing in OpenPLC.
-```
+The variable table shown in Figure 4 includes the IEC output addresses; the complete mapping is listed above.
 
 ---
 
@@ -408,7 +413,7 @@ The implemented level inputs were:
 | %IX0.1 | GPIO 21 | B2 |
 | %IX0.2 | GPIO 22 | B3 |
 | %IX0.3 | GPIO 23 | Start |
-| %IX0.4 | [GPIO USED FOR STOP] | Stop |
+| %IX0.4 | GPIO 16 | Stop |
 
 The principal physical outputs were:
 
@@ -419,14 +424,11 @@ The principal physical outputs were:
 | %QX0.2 | GPIO 15 | H3 |
 | %QX0.3 | GPIO 5 | H4 |
 | %QX0.4 | GPIO 18 | H5 |
+| %QX0.5 | GPIO 17 | SystemActive |
 
-> Replace `[GPIO USED FOR STOP]` with the GPIO finally used in the physical prototype.
+![OpenPLC ESP32 WROOM pin mapping](https://raw.githubusercontent.com/Limao0521/industrial-iot-tank-monitoring/main/docs/images/openplc-esp32-pin-mapping.png)
 
-> **Insert Figure 4 here – OpenPLC Pin Mapping**
-
-```text
-Figure 4. OpenPLC ESP32 pin mapping.
-```
+Figure 5. ESP32 WROOM pin mapping, including STOP on GPIO 16 and SystemActive on GPIO 17.
 
 ---
 
@@ -456,11 +458,9 @@ The remaining control is used according to the system activation configuration.
 
 The LEDs provide a physical representation of the tank state.
 
-> **Insert Figure 5 here – Physical Prototype**
+![ESP32 breadboard prototype with DIP switches and LEDs](https://raw.githubusercontent.com/Limao0521/industrial-iot-tank-monitoring/main/docs/images/esp32-physical-prototype.jpg)
 
-```text
-Figure 5. ESP32, DIP switches and LED indicators used for hardware validation.
-```
+Figure 6. Physical prototype with ESP32, DIP switches and LED indicators.
 
 ---
 
@@ -607,30 +607,28 @@ The results obtained with the real hardware corresponded to the results obtained
 
 ---
 
-# 19. Hardware Circuit Schematic
+# 19. Confirmed Signal Map
 
-The general hardware architecture is:
-
-```text
-                +------------------+
-B1 ------------>|                  |-----> H1 LED
-B2 ------------>|                  |-----> H2 LED
-B3 ------------>|      ESP32       |-----> H3 LED
-Start --------->|     OpenPLC      |-----> H4 LED
-Stop ---------->|                  |-----> H5 LED
-                |                  |-----> System Active
-                +------------------+
-```
-
-Each LED is connected through a current-limiting resistor.
-
-The DIP switches provide the digital signals required to emulate the level sensors.
-
-> **Insert Figure 6 here – Electrical Schematic**
+The following signal map is based on the saved OpenPLC pin mapping and Figure 5. It documents logical signal assignments; it is not a detailed electrical schematic.
 
 ```text
-Figure 6. Electrical connection diagram of the physical prototype.
+B1           -> GPIO 19 -> %IX0.0 -> OpenPLC level logic
+B2           -> GPIO 21 -> %IX0.1 -> OpenPLC level logic
+B3           -> GPIO 22 -> %IX0.2 -> OpenPLC level logic
+START        -> GPIO 23 -> %IX0.3 -> System activation
+STOP         -> GPIO 16 -> %IX0.4 -> System deactivation
+
+OpenPLC H1   -> %QX0.0 -> GPIO 2  -> Correct-level indicator
+OpenPLC H2   -> %QX0.1 -> GPIO 4  -> Low-level indicator
+OpenPLC H3   -> %QX0.2 -> GPIO 15 -> High-level indicator
+OpenPLC H4   -> %QX0.3 -> GPIO 5  -> Empty-tank indicator
+OpenPLC H5   -> %QX0.4 -> GPIO 18 -> Sensor-error indicator
+SystemActive -> %QX0.5 -> GPIO 17 -> Active-system indicator
 ```
+
+Figure 7. Logical signal map of the confirmed IEC addresses and ESP32 GPIO assignments.
+
+A detailed electrical schematic is not available. This map does not specify wiring routes, resistor values, supply connections or input bias configuration.
 
 ---
 
@@ -743,13 +741,19 @@ Several improvements could be implemented in a future version:
 
 # 25. References
 
-[1] Universidad de La Sabana, “PLC – Programming – Ladder Logic (LD): Chemical Liquid Tank Level Monitoring,” course material, 2026.
+[1] Universidad de La Sabana, “PLC – Programming – Ladder Logic (LD): Chemical Liquid Tank Level Monitoring,” RA2.3 course material, 2026, p. 1. [Course exercise PDF](https://github.com/Limao0521/industrial-iot-tank-monitoring/blob/main/references/RA2.3%20%281%29.pdf).
 
-[2] CODESYS Group, “CODESYS Development System,” CODESYS Documentation.
+[2] CODESYS Group, “CODESYS LD FBD,” CODESYS Online Help. [Online](https://content.helpme-codesys.com/en/CODESYS%20LD%20FBD/_ldfbd_start_page.html). Accessed: Oct. 3, 2026.
 
-[3] OpenPLC Project, “OpenPLC Documentation,” OpenPLC Project.
+[3] Autonomy, “Device Configuration Overview,” OpenPLC Editor Documentation. [Online](https://edge.autonomylogic.com/docs/openplc-editor/hardware-configuration/device-config-overview). Accessed: Oct. 3, 2026.
 
-[4] IEC, “IEC 61131-3: Programmable Controllers – Part 3: Programming Languages,” International Electrotechnical Commission.
+[4] International Electrotechnical Commission, *Programmable controllers – Part 3: Programming languages*, IEC 61131-3:2025, 4th ed., May 22, 2025. [Official publication record](https://webstore.iec.ch/en/publication/68533).
+
+[5] CODESYS Group, “CODESYS Visualization,” CODESYS Online Help. [Online](https://content.helpme-codesys.com/en/CODESYS%20Visualization/_visu_start_page.html). Accessed: Oct. 3, 2026.
+
+[6] CODESYS Group, “Command: Simulation,” CODESYS Online Help. [Online](https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_cmd_simulation.html). Accessed: Oct. 3, 2026.
+
+The exercise defines the tank states [1]. Ladder Diagram is part of the IEC 61131-3 language family [2], [4]. The CODESYS documentation describes integrated visualization and simulation [5], [6]; the OpenPLC documentation describes mapping IEC I/O addresses to physical microcontroller pins [3].
 
 ---
 
@@ -794,35 +798,25 @@ where `n` represents H1 through H5.
 
 ---
 
-# Appendix C – Evidence Checklist
+# Appendix C – Project Evidence and Delivery
 
-The following evidence is included in the repository:
+- [x] CODESYS global variables — Figure 1.
+- [x] CODESYS Ladder — Figure 2.
+- [x] CODESYS HMI — Figure 3.
+- [x] OpenPLC Ladder and variable addresses — Figure 4.
+- [x] ESP32 GPIO mapping — Figure 5.
+- [x] Physical prototype photograph — Figure 6.
+- [x] Confirmed logical signal map — Figure 7.
+- [x] Simulation and physical test matrices — Sections 11 and 18.
 
-- [ ] CODESYS Ladder screenshot
-- [ ] CODESYS HMI screenshot
-- [ ] CODESYS simulation screenshot
-- [ ] OpenPLC Ladder screenshot
-- [ ] OpenPLC variable mapping screenshot
-- [ ] OpenPLC ESP32 pin mapping screenshot
-- [ ] Physical prototype photograph
-- [ ] Electrical schematic
-- [ ] Hardware testing evidence
-- [ ] Video demonstration link
+The test matrices record the author's laboratory results. The figures document the implementation; the operation demonstration is delivered separately as a video file in Teams.
+
+A detailed electrical schematic is not available; Section 19 provides the confirmed signal map.
 
 ---
 
 # Video Demonstration
 
-The complete operation of the project can be observed in the following video:
+The demonstration video will be submitted **as a file directly in the Teams assignment**.
 
-**Video URL:** [ADD VIDEO LINK HERE]
-
-The video demonstrates:
-
-1. System objective.
-2. Truth table.
-3. CODESYS Ladder implementation.
-4. CODESYS HMI operation.
-5. Normal tank conditions.
-6. Sensor error detection.
-
+It presents the project objective, truth table and Boolean logic, CODESYS Ladder and HMI operation, OpenPLC variable and GPIO mapping, the physical prototype, normal and inconsistent sensor states, Start/Stop operation, results and conclusions.
