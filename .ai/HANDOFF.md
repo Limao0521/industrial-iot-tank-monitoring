@@ -1,9 +1,12 @@
 # Handoff
 
-Objective: publish the native GitHub Wiki and final tank documentation.
+Completed: final tank documentation published to the public repository and native GitHub Wiki. Both Home.md and Home-Tank-monitoring.md contain the final text.
 
-Completed: public repository exists; project source bytes match the author-prepared archive; six final images copied unchanged; documentation, STOP GPIO 16, signal map, official references and Teams video delivery completed. Author-prepared ZIP copied unchanged.
+Repository: https://github.com/Limao0521/industrial-iot-tank-monitoring
+Wiki for delivery: https://github.com/Limao0521/industrial-iot-tank-monitoring/wiki/Home-Tank-monitoring
 
-Pending: initialize the first native Wiki page from the owner GitHub session, then publish Home.md through its separate Git repository and verify all six images.
+Verification: Wiki and repository HTTP 200; all six images load in the browser and match source SHA256 hashes. CODESYS source matches the desktop original; four OpenPLC project files match the final author archive. Author ZIP copied unchanged. STOP GPIO 16 and SystemActive GPIO 17 confirmed by saved mapping and screenshot.
+
+Pending delivery action: author submits video file directly in Teams. A detailed electrical schematic is unavailable; the Wiki identifies the confirmed signal map as such.
 
 Program logic and desktop originals were not modified. No new archives or hardware tests were generated.
