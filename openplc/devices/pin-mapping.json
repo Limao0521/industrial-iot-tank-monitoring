@@ -1,0 +1,70 @@
+{
+  "ESP32 WROOM": [
+    {
+      "pin": "19",
+      "pinType": "digitalInput",
+      "address": "%IX0.0",
+      "alias": "B1"
+    },
+    {
+      "pin": "21",
+      "pinType": "digitalInput",
+      "address": "%IX0.1",
+      "alias": "B2"
+    },
+    {
+      "pin": "22",
+      "pinType": "digitalInput",
+      "address": "%IX0.2",
+      "alias": "B3"
+    },
+    {
+      "pin": "23",
+      "pinType": "digitalInput",
+      "address": "%IX0.3",
+      "alias": "START"
+    },
+    {
+      "pin": "16",
+      "pinType": "digitalInput",
+      "address": "%IX0.4",
+      "alias": "STOP"
+    },
+    {
+      "pin": "02",
+      "pinType": "digitalOutput",
+      "address": "%QX0.0",
+      "alias": "H1"
+    },
+    {
+      "pin": "04",
+      "pinType": "digitalOutput",
+      "address": "%QX0.1",
+      "alias": "H2"
+    },
+    {
+      "pin": "15",
+      "pinType": "digitalOutput",
+      "address": "%QX0.2",
+      "alias": "H3"
+    },
+    {
+      "pin": "05",
+      "pinType": "digitalOutput",
+      "address": "%QX0.3",
+      "alias": "H4"
+    },
+    {
+      "pin": "18",
+      "pinType": "digitalOutput",
+      "address": "%QX0.4",
+      "alias": "H5"
+    },
+    {
+      "pin": "17",
+      "pinType": "digitalOutput",
+      "address": "%QX0.5",
+      "alias": "SystemActive"
+    }
+  ]
+}

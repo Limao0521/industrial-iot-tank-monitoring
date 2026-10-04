@@ -1,0 +1,11 @@
+{
+  "deviceBoard": "ESP32 WROOM",
+  "communicationPort": "COM9",
+  "runtimeIpAddress": "",
+  "vendorScreenData": {},
+  "vendorScreenDataByBoard": {
+    "OpenPLC Simulator": {},
+    "ESP32 Generic": {}
+  },
+  "selectedPlatformOptions": {}
+}
