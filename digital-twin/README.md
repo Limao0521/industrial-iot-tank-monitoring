@@ -2,6 +2,8 @@
 
 El ESP32 de RA2.3 calcula el estado y conserva los GPIO originales. En el banco disponible, los DIP y los pulsadores se emulan con mensajes Modbus por USB. CODESYS lee la misma imagen de proceso que se publica a Ubidots. El mando remoto cambia la combinación efectiva usada por el ESP32.
 
+La [guía de pruebas y entrega](docs/Validacion-y-entrega.md) contiene la secuencia de demostración y lo que se debe entregar.
+
 ## Arranque en Windows
 
 1. Conecta el ESP32 por USB. Verifica el puerto en el Administrador de dispositivos o con `arduino-cli board list`. Durante la integración apareció como `COM9`.
@@ -25,6 +27,7 @@ El ESP32 de RA2.3 calcula el estado y conserva los GPIO originales. En el banco 
 - El puente crea o actualiza el dispositivo `tanque-ra23` con `estado-tanque`, `entradas-fuente`, `entradas-efectivas`, `sistema-activo`, `mando-activo`, `mando-habilitado`, `entradas-serial` y `enlace-modbus`. Un enlace en 0 indica que las demás métricas conservan su último valor histórico.
 - Crea una variable **raw** con etiqueta API `comando-nivel`. En el tablero, enlaza un **Manual Input** a esa variable o configura un **Slider** con cinco pasos. Añade métricas de último valor para estado, enlace y mando activo. Usa un gráfico temporal para comparar entradas físicas y efectivas.
 - Activa START y mantenlo durante dos segundos. En la consola de prueba, `110 1 0` deja B1 y B2 en 1, START activo y STOP liberado. Con el permiso activo, envía un comando nuevo. `110 0 0` libera START, `110 0 1` aplica STOP y `q` cierra el puente. Si se pierden los mensajes de prueba durante cinco segundos, el ESP32 borra las entradas emuladas y apaga las salidas. Una orden remota caduca a los 30 segundos.
+- La consola de prueba con `--ubidots --enable-remote` también permite usar `iot 4` para publicar una orden en Ubidots e `iot estado` para leer los últimos valores guardados allí. Esto permite demostrar la conexión por la API cuando la interfaz web devuelve HTTP 402.
 
 | Comando | Acción | B1 B2 B3 efectivos |
 |---:|---|:---:|

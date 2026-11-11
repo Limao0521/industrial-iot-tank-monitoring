@@ -180,14 +180,23 @@ class Ubidots:
             with self.opener.open(request, timeout=4) as response:
                 return json.loads(response.read(32_768))
 
-    def latest(self):
+    def last_values(self):
         try:
-            payload = self._request_url(LAST_VALUES_URL)
+            return self._request_url(LAST_VALUES_URL)
         except HTTPError as error:
             if error.code == 404:
-                return None
+                return {}
             raise
-        return payload.get("comando-nivel")
+
+    def latest(self):
+        return self.last_values().get("comando-nivel")
+
+    def post_points(self, data):
+        response = self.request(data=data)
+        for label in data:
+            statuses = response.get(label)
+            if (not statuses or any(not 200 <= row["status_code"] < 300 for row in statuses)):
+                raise OSError(f"Ubidots rejected {label}")
 
     def publish(self, values):
         data = {"enlace-modbus": int(values is not None)}
@@ -199,11 +208,7 @@ class Ubidots:
                 "mando-activo": override, "mando-habilitado": armed,
                 "entradas-serial": demo,
             })
-        response = self.request(data=data)
-        for label in data:
-            statuses = response.get(label)
-            if (not statuses or any(not 200 <= row["status_code"] < 300 for row in statuses)):
-                raise OSError("Ubidots rejected a telemetry variable")
+        self.post_points(data)
 
 
 @dataclass(frozen=True)
@@ -346,16 +351,49 @@ def demo_input_bits(line):
     return sum(int(bit) << index for index, bit in enumerate("".join(fields)))
 
 
-def demo_console(updates):
+def demo_iot(argument, client, snapshot):
+    if client is None:
+        raise ValueError("Inicia el puente con --ubidots --enable-remote para usar iot.")
+    if argument == "estado":
+        values = client.last_values()
+        print("Últimos valores guardados en Ubidots:")
+        for label in ("estado-tanque", "entradas-fuente", "entradas-efectivas",
+                      "mando-habilitado", "mando-activo", "enlace-modbus", "comando-nivel"):
+            dot = values.get(label) or {}
+            value = dot.get("value")
+            print(f"  {label}={value:g}" if type(value) in (int, float) else f"  {label}: sin dato")
+        return
+    if argument not in ("0", "1", "2", "3", "4"):
+        raise ValueError("Usa iot estado o iot seguido de un valor de 0 a 4.")
+    value = int(argument)
+    inputs = snapshot.get()
+    if inputs is None:
+        raise ValueError("El ESP32 aún no responde por Modbus.")
+    if value != 0 and not inputs[5]:
+        raise ValueError("Activa START y espera a que el registro indique permiso=1.")
+    client.post_points({"comando-nivel": value})
+    print(f"Ubidots recibió la orden {value}. Espera la confirmación del ESP32.")
+
+
+def demo_console(updates, client=None, snapshot=None):
     print("Entradas de prueba por USB. Escribe B1B2B3 START STOP o q para salir.")
+    if client is not None:
+        print("Ubidots: iot estado para consultar, iot 0–4 para enviar una orden.")
     while True:
         line = input("demo> ").strip()
         if line == "q":
             return
         try:
-            updates.put(demo_input_bits(line))
+            action, _, argument = line.partition(" ")
+            if action == "iot":
+                demo_iot(argument.strip(), client, snapshot)
+            else:
+                updates.put(demo_input_bits(line))
         except ValueError as error:
             print(error)
+        except (OSError, TypeError, KeyError, AttributeError) as error:
+            reason = f"HTTP {error.code}" if isinstance(error, HTTPError) else type(error).__name__
+            print(f"No se completó la solicitud a Ubidots ({reason}).")
 
 
 def main():
@@ -402,7 +440,7 @@ def main():
             if demo_updates is None:
                 stop.wait()
             else:
-                demo_console(demo_updates)
+                demo_console(demo_updates, client if args.enable_remote else None, snapshot)
         except (KeyboardInterrupt, EOFError):
             pass
         finally:

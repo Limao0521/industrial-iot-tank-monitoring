@@ -6,6 +6,7 @@
 - ESP32 on COM9 was flashed. The current bench lacks DIP switches and pushbuttons, so use `--serial-demo`. The original GPIO map remains selectable for restored hardware.
 - ESP32 RTU verified all eight input combinations, override and release, STOP priority and timeout of injected inputs. The gateway has 16 passing tests. CODESYS Control Win build generated with zero errors and warnings.
 - Live Ubidots STEM telemetry and command 4 verified against COM9. The v2 last-values API returned the command and v1.6 accepted telemetry. CODESYS Control Win ran the test copy and read `GVL.ModbusOK = TRUE` and `GVL.SerialInputs = TRUE` with the ESP32 in STOP. The web dashboard remains blocked by HTTP 402. Never commit tokens, compiler caches or raw flash backups.
+- The serial demo console supports `iot 0–4` and `iot estado` for demonstrating the API without the web dashboard. See `digital-twin/docs/Validacion-y-entrega.md`.
 
 ## RA2.3 baseline
 

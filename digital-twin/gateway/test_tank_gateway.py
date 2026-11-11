@@ -1,4 +1,5 @@
 from io import BytesIO
+from unittest.mock import Mock
 import socket
 from struct import pack, unpack
 from threading import Thread
@@ -7,7 +8,7 @@ import pytest
 
 from tank_gateway import (
     Command, MAGIC, ModbusError, ModbusServer, RtuClient, Snapshot,
-    crc, demo_input_bits, modbus_response, new_command,
+    crc, demo_input_bits, demo_iot, modbus_response, new_command,
 )
 
 VALUES = (3, 3, 1, 1, 0, 0, MAGIC, 1)
@@ -72,6 +73,24 @@ def test_command_requires_fresh_timestamp_and_deduplicates():
     assert new_command(dot, 39_000, 40_000, 11) == (39_000, None)
     assert new_command(dot, 0, 54_000, 11) == (39_000, None)
     assert new_command(dot, 0, 38_999, 11) == (0, None)
+
+
+def test_demo_iot_uses_cloud_and_requires_a_live_armed_esp32(capsys):
+    client = Mock()
+    snapshot = Snapshot()
+    with pytest.raises(ValueError, match="no responde"):
+        demo_iot("4", client, snapshot)
+    snapshot.set(VALUES)
+    with pytest.raises(ValueError, match="permiso=1"):
+        demo_iot("4", client, snapshot)
+    client.post_points.assert_not_called()
+
+    snapshot.set((3, 3, 1, 1, 0, 1, MAGIC, 1))
+    demo_iot("4", client, snapshot)
+    client.post_points.assert_called_once_with({"comando-nivel": 4})
+    client.last_values.return_value = {"estado-tanque": {"value": 3}}
+    demo_iot("estado", client, snapshot)
+    assert "estado-tanque=3" in capsys.readouterr().out
 
 
 def test_tcp_contract():
