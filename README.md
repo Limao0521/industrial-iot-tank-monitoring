@@ -2,6 +2,7 @@
 
 Proyecto RA2.3 de monitoreo del nivel de un tanque químico mediante tres sensores digitales, CODESYS con HMI y OpenPLC con ESP32. Documenta los cuatro estados válidos, la detección de combinaciones incoherentes y el control de inicio/parada.
 
+- [Gemelo digital RA2.3 con ESP32, CODESYS y Ubidots](digital-twin/)
 - [Wiki técnica de GitHub](https://github.com/Limao0521/industrial-iot-tank-monitoring/wiki)
 - [Copia de la documentación técnica](wiki/Home.md)
 - [Proyecto CODESYS editable](codesys/RA.project)

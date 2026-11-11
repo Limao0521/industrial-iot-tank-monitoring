@@ -1,5 +1,14 @@
 # Handoff
 
+## Digital twin
+
+- Implementation lives in `digital-twin/` and the native wiki page is `Gemelo-digital-del-tanque-RA2.3`.
+- ESP32 on COM9 was flashed. The current bench lacks DIP switches and pushbuttons, so use `--serial-demo`. The original GPIO map remains selectable for restored hardware.
+- ESP32 RTU verified all eight input combinations, override and release, STOP priority and timeout of injected inputs. The gateway has 16 passing tests. CODESYS Control Win build generated with zero errors and warnings.
+- Pending live checks are tracked in the wiki validation matrix. Ubidots requires the user's authenticated account and a token entered locally. Never commit tokens, compiler caches or raw flash backups.
+
+## RA2.3 baseline
+
 Completed: final tank documentation published to the public repository and native GitHub Wiki. Both Home.md and Home-Tank-monitoring.md contain the final text.
 
 Repository: https://github.com/Limao0521/industrial-iot-tank-monitoring
