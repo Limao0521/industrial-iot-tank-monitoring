@@ -13,7 +13,7 @@ El ESP32 de RA2.3 calcula el estado y conserva los GPIO originales. En el banco 
    python gateway/tank_gateway.py --port COM9 --serial-demo
    ```
 
-4. Abre [TankTwin.project](codesys/TankTwin.project) en CODESYS V3.5 SP22 Patch 3. Arranca el runtime local **CODESYS Control Win V3 x64**, selecciona el dispositivo local, descarga la aplicación, arráncala y abre **Visualization** en línea. El cliente de lectura Modbus TCP ya apunta a `127.0.0.1:1502` y usa ModbusFB 4.5.0.0.
+4. Abre [TankTwin.project](codesys/TankTwin.project) en CODESYS V3.5 SP22 Patch 3. Arranca el runtime local **CODESYS Control Win V3 x64**, selecciona el dispositivo local e inicia sesión. En el primer acceso, CODESYS puede pedir activar la administración de usuarios y crear un administrador local. Descarga la aplicación, arráncala y abre **Visualization** en línea. El cliente de lectura Modbus TCP ya apunta a `127.0.0.1:1502` y usa ModbusFB 4.5.0.0.
 5. Para publicar y habilitar la recepción de órdenes, cierra el puente anterior con Ctrl+C y arranca el siguiente comando. Introduce el token de la cuenta Ubidots en el prompt oculto.
 
    ```powershell

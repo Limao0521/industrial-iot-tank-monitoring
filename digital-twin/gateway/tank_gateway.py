@@ -19,8 +19,9 @@ COUNT = 8
 MAGIC = 0xA231
 TCP_PORT = 1502
 MAX_AGE_MS = 15_000
+MIN_REQUEST_INTERVAL = 1.1
 DEVICE_URL = "https://industrial.api.ubidots.com/api/v1.6/devices/tanque-ra23/"
-COMMAND_PATH = "comando-nivel/values/?page_size=1"
+LAST_VALUES_URL = "https://industrial.api.ubidots.com/api/v2.0/devices/~tanque-ra23/_/values/last"
 LOG = logging.getLogger("tank")
 
 
@@ -161,25 +162,32 @@ class Ubidots:
     def __init__(self, token):
         self.token = token
         self.opener = build_opener(NoRedirect)
+        self._request_lock = Lock()
+        self._next_request = 0.0
 
     def request(self, path="", data=None):
+        return self._request_url(DEVICE_URL + path, data)
+
+    def _request_url(self, url, data=None):
         request = Request(
-            DEVICE_URL + path,
+            url,
             data=None if data is None else json.dumps(data).encode(),
             headers={"X-Auth-Token": self.token, "Content-Type": "application/json"},
         )
-        with self.opener.open(request, timeout=4) as response:
-            return json.loads(response.read(32_768))
+        with self._request_lock:
+            time.sleep(max(0.0, self._next_request - time.monotonic()))
+            self._next_request = time.monotonic() + MIN_REQUEST_INTERVAL
+            with self.opener.open(request, timeout=4) as response:
+                return json.loads(response.read(32_768))
 
     def latest(self):
         try:
-            payload = self.request(COMMAND_PATH)
+            payload = self._request_url(LAST_VALUES_URL)
         except HTTPError as error:
             if error.code == 404:
                 return None
             raise
-        results = payload.get("results", [])
-        return results[0] if results else None
+        return payload.get("comando-nivel")
 
     def publish(self, values):
         data = {"enlace-modbus": int(values is not None)}
